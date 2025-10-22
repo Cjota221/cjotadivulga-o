@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Carrega o cliente Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         body {
@@ -17,11 +19,11 @@
             background-color: #f4f7f6; /* Um cinza bem claro para o fundo */
         }
         
-        /* Cores da Marca "CJ" (Sugestão) */
+        /* Novas Cores da Marca "CJ" (Rosa e Amarelo) */
         :root {
-            --cor-cj-principal: #0D4A59; /* Azul Petróleo Escuro */
-            --cor-cj-secundaria: #177E89; /* Azul Petróleo Médio */
-            --cor-cj-destaque: #F9A03F; /* Um laranja/âmbar para destaque */
+            --cor-cj-principal: #D932A3; /* Rosa Principal */
+            --cor-cj-secundaria: #D932A3; /* Rosa Secundário */
+            --cor-cj-destaque: #ECEC3A;  /* Amarelo Destaque */
         }
 
         .bg-cj-principal { background-color: var(--cor-cj-principal); }
@@ -31,6 +33,7 @@
         .bg-cj-destaque { background-color: var(--cor-cj-destaque); }
         .text-cj-destaque { color: var(--cor-cj-destaque); }
         .border-cj-principal { border-color: var(--cor-cj-principal); }
+        .border-cj-destaque { border-color: var(--cor-cj-destaque); }
         .ring-cj-secundaria { --tw-ring-color: var(--cor-cj-secundaria); }
         .ring-cj-destaque { --tw-ring-color: var(--cor-cj-destaque); }
 
@@ -59,7 +62,7 @@
             transition: background-color 0.2s;
         }
         input[type="file"]::file-selector-button:hover {
-            background-color: var(--cor-cj-principal);
+            background-color: #b02885; /* Um tom de rosa mais escuro para hover */
         }
     </style>
 </head>
@@ -76,11 +79,11 @@
 
     <div class="container mx-auto max-w-7xl p-4 md:p-8">
         
-        <!-- Seção do Administrador (Upload) - AGORA ATIVADO -->
+        <!-- Seção do Administrador (Upload) -->
         <section class="mb-12 bg-white p-6 rounded-lg shadow-md border-t-4 border-cj-destaque">
             <h2 class="text-2xl font-semibold mb-5 text-cj-principal">Painel de Upload</h2>
             
-            <form id="form-upload" class="space-y-4"> <!-- Formulário ATIVADO -->
+            <form id="form-upload" class="space-y-4">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -105,8 +108,9 @@
                 </div>
                 
                 <div class="flex items-center space-x-4">
+                    <!-- Botão de Enviar com fundo Amarelo e texto Preto para contraste -->
                     <button type="submit" id="btn-submit"
-                            class="w-full sm:w-auto px-8 py-3 bg-cj-destaque text-white font-bold rounded-md shadow-lg hover:opacity-90 focus:outline-none focus:ring-2 ring-cj-destaque ring-offset-2 transition-all duration-200">
+                            class="w-full sm:w-auto px-8 py-3 bg-cj-destaque text-gray-900 font-bold rounded-md shadow-lg hover:opacity-90 focus:outline-none focus:ring-2 ring-cj-destaque ring-offset-2 transition-all duration-200">
                         Enviar Arquivos
                     </button>
                     <!-- Feedback de Carregamento -->
@@ -122,7 +126,7 @@
         <section>
             <h2 class="text-2xl font-semibold mb-6 text-cj-principal border-b-2 border-gray-200 pb-2">Catálogo de Mídia</h2>
             
-            <!-- Mensagem de carregamento inicial (Visível novamente) -->
+            <!-- Mensagem de carregamento inicial -->
             <div id="catalogo-loading" class="text-center py-10">
                 <div class="loader inline-block"></div>
                 <p class="text-gray-500 mt-2">Carregando catálogo...</p>
@@ -130,7 +134,7 @@
 
             <!-- Onde os cards serão inseridos -->
             <div id="catalogo-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Cards do Firebase serão inseridos aqui -->
+                <!-- Cards do Supabase serão inseridos aqui -->
             </div>
             
             <p id="catalogo-vazio" class="text-gray-500 text-center py-10 hidden">O catálogo está vazio. Faça o primeiro upload!</p>
@@ -138,28 +142,20 @@
 
     </div>
 
-    <!-- Módulo JavaScript com Firebase (AGORA ATIVADO) -->
+    <!-- Módulo JavaScript com Supabase (AGORA ATIVADO) -->
     <script type="module">
-        // Importações do Firebase (use a versão 9 ou superior, modular)
-        // --- ATIVADO ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
-        
-        
+        // Importa a função createClient do Supabase
+        const { createClient } = supabase;
+
         // =======================================================================
-        //     SUA CONFIGURAÇÃO DO FIREBASE FOI COLADA AQUI!
+        //     CONFIGURAÇÃO DO SUPABASE (COPIADO DA SUA MENSAGEM)
         // =======================================================================
-        const firebaseConfig = {
-          apiKey: "AIzaSyDOkIecIeUDYHwJirfhiu9SUpCg6hJNaeM", // Pego da sua imagem
-          authDomain: "catalogo-cjota.firebaseapp.com",     // Pego da sua imagem
-          projectId: "catalogo-cjota",                      // Pego da sua imagem
-          storageBucket: "catalogo-cjota.appspot.com",      // Pego da sua imagem
-          messagingSenderId: "276150734469",                // Pego da sua imagem
-          appId: "1:276150734469:web:03ce1369205179ca0ce3ec", // Pego da sua imagem
-          measurementId: "G-JYVVJZR4Z"                      // Pego da sua imagem
-        };
+        const SUPABASE_URL = 'https://pxuesehwihaiiccdzvjt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4dWVzZWh3aWhhaWljY2R6dmp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MjU1ODQsImV4cCI6MjA3NjQwMTU4NH0.mmTpAjLM2hwqHF60X9jskX7qxj9PuqUwTnNFBM6aPo4';
+        
+        // Nomes da tabela e do bucket (devem ser os mesmos do arquivo schema.sql)
+        const NOME_TABELA_DB = 'catalogo_cj';
+        const NOME_BUCKET_STORAGE = 'catalogo_midia';
         // =======================================================================
 
         // --- Elementos da UI ---
@@ -171,7 +167,8 @@
         const grid = document.getElementById('catalogo-grid');
         const loadingMsg = document.getElementById('catalogo-loading');
         const emptyMsg = document.getElementById('catalogo-vazio');
-
+        
+        let client;
 
         // --- CRIAR ELEMENTO DO CARD ---
         function criarCard(item) {
@@ -202,7 +199,7 @@
                     ${precoHtml}
                 </div>
                 <div class="p-3 bg-gray-50 border-t">
-                    <a href="${item.fileURL}" download="${item.nome}" target="_blank"
+                    <a href="${item.fileURL}" download="${item.nomeArquivo}" target="_blank"
                        class="w-full text-center block px-4 py-2 bg-cj-secundaria text-white text-sm font-medium rounded-md hover:bg-cj-principal transition-colors">
                         Baixar Mídia
                     </a>
@@ -211,71 +208,91 @@
             return card;
         }
 
-        // =======================================================================
-        //     MODO DE PRÉ-VISUALIZAÇÃO FOI REMOVIDO
-        // =======================================================================
-
-
-        // --- Código do Firebase (AGORA ATIVADO) ---
-        
-        let app, auth, db, storage;
+        // --- Código do Supabase ---
         
         try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            storage = getStorage(app);
+            // Inicializa o cliente Supabase
+            client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            // Autentica o usuário anonimamente para ter permissão
-            await signInAnonymously(auth);
-
             // Inicia o carregamento do catálogo
             carregarCatalogo();
+            
+            // Inicia o listener de tempo real
+            iniciarListenerRealtime();
 
         } catch (e) {
-            console.error("Erro ao inicializar o Firebase:", e);
-            loadingMsg.innerText = "Erro ao conectar ao banco de dados. Verifique a configuração do Firebase.";
-            console.warn("Verifique se você colou corretamente o objeto 'firebaseConfig' acima.");
+            console.error("Erro ao inicializar o Supabase:", e);
+            loadingMsg.innerText = "Erro ao conectar ao banco de dados. Verifique a configuração do Supabase.";
+            console.warn("Verifique se você executou o arquivo schema.sql no seu painel Supabase.");
         }
 
         /**
-         * CARREGAR CATÁLOGO (FIRESTORE)
+         * CARREGAR CATÁLOGO (SUPABASE DB)
          */
-        function carregarCatalogo() {
-            if (!db) return; // Não faz nada se o DB não foi iniciado
+        async function carregarCatalogo() {
+            if (!client) return;
 
-            const dbCollection = collection(db, "catalogoCJ");
-            // Ordena pelos mais recentes primeiro
-            const q = query(dbCollection, orderBy("createdAt", "desc")); 
+            const { data, error } = await client
+                .from(NOME_TABELA_DB)
+                .select('*')
+                .order('created_at', { ascending: false });
 
-            onSnapshot(q, (snapshot) => {
-                loadingMsg.classList.add('hidden');
-                grid.innerHTML = ''; // Limpa o grid para recarregar
+            loadingMsg.classList.add('hidden');
 
-                if (snapshot.empty) {
-                    emptyMsg.classList.remove('hidden');
-                } else {
-                    emptyMsg.classList.add('hidden');
-                    snapshot.forEach(doc => {
-                        const item = doc.data();
-                        const card = criarCard(item);
-                        grid.appendChild(card);
-                    });
-                }
-            }, (error) => {
+            if (error) {
                 console.error("Erro ao buscar catálogo: ", error);
                 loadingMsg.innerText = "Erro ao carregar catálogo.";
-            });
+                return;
+            }
+
+            grid.innerHTML = ''; // Limpa o grid para recarregar
+            if (data.length === 0) {
+                emptyMsg.classList.remove('hidden');
+            } else {
+                emptyMsg.classList.add('hidden');
+                data.forEach(item => {
+                    const card = criarCard(item);
+                    grid.appendChild(card);
+                });
+            }
+        }
+        
+        /**
+         * Ouve por mudanças em tempo real (Novos uploads)
+         */
+        function iniciarListenerRealtime() {
+            if (!client) return;
+            
+            client.channel('catalogo-channel')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: NOME_TABELA_DB }, 
+                    (payload) => {
+                        console.log('Novo item detectado!', payload.new);
+                        // Adiciona o novo card no topo da lista
+                        const card = criarCard(payload.new);
+                        grid.prepend(card);
+                        emptyMsg.classList.add('hidden');
+                    }
+                )
+                .subscribe((status, err) => {
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Conectado ao canal de tempo real do Supabase!');
+                    }
+                    if (err) {
+                        console.error('Erro no canal Supabase:', err);
+                    }
+                });
         }
 
+
         /**
-         * LIDAR COM O UPLOAD (STORAGE)
+         * LIDAR COM O UPLOAD (SUPABASE STORAGE)
          */
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!storage || !db) {
-                alert("Erro: O Firebase não está conectado.");
+            if (!client) {
+                alert("Erro: O Supabase não está conectado.");
                 return;
             }
 
@@ -300,25 +317,36 @@
                     const file = arquivos[i];
                     feedbackTexto.innerText = `Enviando ${i + 1} de ${arquivos.length}: ${file.name}...`;
 
-                    // 1. Cria uma referência única no Storage
+                    // 1. Cria um nome de arquivo único
                     const nomeUnico = `${Date.now()}-${file.name}`;
-                    const storageRef = ref(storage, `uploads/${nomeUnico}`);
 
-                    // 2. Faz o upload do arquivo
-                    await uploadBytes(storageRef, file);
+                    // 2. Faz o upload do arquivo para o Supabase Storage
+                    const { data: uploadData, error: uploadError } = await client.storage
+                        .from(NOME_BUCKET_STORAGE)
+                        .upload(nomeUnico, file);
+                    
+                    if (uploadError) throw uploadError;
 
-                    // 3. Pega a URL de download
-                    const fileURL = await getDownloadURL(storageRef);
+                    // 3. Pega a URL pública do arquivo
+                    const { data: urlData } = client.storage
+                        .from(NOME_BUCKET_STORAGE)
+                        .getPublicUrl(uploadData.path);
 
-                    // 4. Salva as informações no Firestore
-                    await addDoc(collection(db, "catalogoCJ"), {
-                        nome: nome,
-                        preco: preco,
-                        fileURL: fileURL,
-                        tipo: file.type, // Salva o tipo (image/png, video/mp4, etc)
-                        nomeArquivo: file.name,
-                        createdAt: serverTimestamp() // Pega a data do servidor
-                    });
+                    const fileURL = urlData.publicUrl;
+
+                    // 4. Salva as informações no Supabase Database
+                    const { error: dbError } = await client
+                        .from(NOME_TABELA_DB)
+                        .insert({
+                            nome: nome,
+                            preco: preco,
+                            fileURL: fileURL,
+                            tipo: file.type, // Salva o tipo (image/png, video/mp4, etc)
+                            nomeArquivo: file.name
+                            // created_at é definido por padrão no SQL
+                        });
+                    
+                     if (dbError) throw dbError;
                 }
                 
                 // Limpa o formulário e reseta o botão
