@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Divulgação CJ</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6; /* Um cinza bem claro para o fundo */
+        }
+        
+        /* Cores da Marca "CJ" (Sugestão) */
+        :root {
+            --cor-cj-principal: #0D4A59; /* Azul Petróleo Escuro */
+            --cor-cj-secundaria: #177E89; /* Azul Petróleo Médio */
+            --cor-cj-destaque: #F9A03F; /* Um laranja/âmbar para destaque */
+        }
+
+        .bg-cj-principal { background-color: var(--cor-cj-principal); }
+        .text-cj-principal { color: var(--cor-cj-principal); }
+        .bg-cj-secundaria { background-color: var(--cor-cj-secundaria); }
+        .text-cj-secundaria { color: var(--cor-cj-secundaria); }
+        .bg-cj-destaque { background-color: var(--cor-cj-destaque); }
+        .text-cj-destaque { color: var(--cor-cj-destaque); }
+        .border-cj-principal { border-color: var(--cor-cj-principal); }
+        .ring-cj-secundaria { --tw-ring-color: var(--cor-cj-secundaria); }
+        .ring-cj-destaque { --tw-ring-color: var(--cor-cj-destaque); }
+
+        /* Animação de carregamento */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--cor-cj-secundaria);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Estilo para o input de arquivo */
+        input[type="file"]::file-selector-button {
+            background-color: var(--cor-cj-secundaria);
+            color: white;
+            border: 0;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: var(--cor-cj-principal);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Cabeçalho com a marca -->
+    <header class="bg-cj-principal shadow-lg">
+        <div class="container mx-auto max-w-7xl p-4 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-white">
+                Catálogo<span class="text-cj-destaque">.</span>CJ
+            </h1>
+        </div>
+    </header>
+
+    <div class="container mx-auto max-w-7xl p-4 md:p-8">
+        
+        <!-- Seção do Administrador (Upload) - AGORA ATIVADO -->
+        <section class="mb-12 bg-white p-6 rounded-lg shadow-md border-t-4 border-cj-destaque">
+            <h2 class="text-2xl font-semibold mb-5 text-cj-principal">Painel de Upload</h2>
+            
+            <form id="form-upload" class="space-y-4"> <!-- Formulário ATIVADO -->
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">Nome do Modelo/Produto</label>
+                        <input type="text" id="nome" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 ring-cj-secundaria"
+                               placeholder="Ex: Coleção Verão 2025">
+                    </div>
+                    <div>
+                        <label for="preco" class="block text-sm font-medium text-gray-700 mb-1">Preço (Opcional)</label>
+                        <input type="text" id="preco"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 ring-cj-secundaria"
+                               placeholder="Ex: R$ 199,90 ou 'Consulte'">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="arquivos" class="block text-sm font-medium text-gray-700 mb-1">Fotos e/ou Vídeos</label>
+                    <input type="file" id="arquivos" multiple required
+                           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-cj-secundaria file:text-white hover:file:bg-cj-principal cursor-pointer">
+                    <p class="text-xs text-gray-500 mt-1">Você pode selecionar vários arquivos de uma vez.</p>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button type="submit" id="btn-submit"
+                            class="w-full sm:w-auto px-8 py-3 bg-cj-destaque text-white font-bold rounded-md shadow-lg hover:opacity-90 focus:outline-none focus:ring-2 ring-cj-destaque ring-offset-2 transition-all duration-200">
+                        Enviar Arquivos
+                    </button>
+                    <!-- Feedback de Carregamento -->
+                    <div id="feedback-upload" class="hidden flex-col items-center">
+                        <div class="loader"></div>
+                        <p id="feedback-texto" class="text-sm text-cj-secundaria font-medium ml-3">Enviando arquivos, por favor aguarde...</p>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Galeria do Catálogo (para Clientes) -->
+        <section>
+            <h2 class="text-2xl font-semibold mb-6 text-cj-principal border-b-2 border-gray-200 pb-2">Catálogo de Mídia</h2>
+            
+            <!-- Mensagem de carregamento inicial (Visível novamente) -->
+            <div id="catalogo-loading" class="text-center py-10">
+                <div class="loader inline-block"></div>
+                <p class="text-gray-500 mt-2">Carregando catálogo...</p>
+            </div>
+
+            <!-- Onde os cards serão inseridos -->
+            <div id="catalogo-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Cards do Firebase serão inseridos aqui -->
+            </div>
+            
+            <p id="catalogo-vazio" class="text-gray-500 text-center py-10 hidden">O catálogo está vazio. Faça o primeiro upload!</p>
+        </section>
+
+    </div>
+
+    <!-- Módulo JavaScript com Firebase (AGORA ATIVADO) -->
+    <script type="module">
+        // Importações do Firebase (use a versão 9 ou superior, modular)
+        // --- ATIVADO ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+        
+        
+        // =======================================================================
+        //     SUA CONFIGURAÇÃO DO FIREBASE FOI COLADA AQUI!
+        // =======================================================================
+        const firebaseConfig = {
+          apiKey: "AIzaSyDOkIecIeUDYHwJirfhiu9SUpCg6hJNaeM", // Pego da sua imagem
+          authDomain: "catalogo-cjota.firebaseapp.com",     // Pego da sua imagem
+          projectId: "catalogo-cjota",                      // Pego da sua imagem
+          storageBucket: "catalogo-cjota.appspot.com",      // Pego da sua imagem
+          messagingSenderId: "276150734469",                // Pego da sua imagem
+          appId: "1:276150734469:web:03ce1369205179ca0ce3ec", // Pego da sua imagem
+          measurementId: "G-JYVVJZR4Z"                      // Pego da sua imagem
+        };
+        // =======================================================================
+
+        // --- Elementos da UI ---
+        const form = document.getElementById('form-upload');
+        const btnSubmit = document.getElementById('btn-submit');
+        const feedbackUpload = document.getElementById('feedback-upload');
+        const feedbackTexto = document.getElementById('feedback-texto');
+        
+        const grid = document.getElementById('catalogo-grid');
+        const loadingMsg = document.getElementById('catalogo-loading');
+        const emptyMsg = document.getElementById('catalogo-vazio');
+
+
+        // --- CRIAR ELEMENTO DO CARD ---
+        function criarCard(item) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-lg overflow-hidden flex flex-col group transition-transform duration-300 hover:scale-105';
+
+            let mediaHtml = '';
+            // Verifica se é imagem ou vídeo
+            if (item.tipo && item.tipo.startsWith('image/')) {
+                mediaHtml = `<img src="${item.fileURL}" alt="${item.nome}" class="w-full h-full object-cover" loading="lazy">`;
+            } else if (item.tipo && item.tipo.startsWith('video/')) {
+                mediaHtml = `<video controls muted loop class="w-full h-full object-cover"><source src="${item.fileURL}" type="${item.tipo}"></video>`;
+            } else {
+                // Fallback para tipos desconhecidos
+                mediaHtml = `<div class="p-4 text-center text-gray-500">Mídia não suportada para preview</div>`;
+            }
+
+            const precoHtml = item.preco ? `<p class="text-md text-cj-secundaria font-bold">${item.preco}</p>` : '';
+
+            card.innerHTML = `
+                <div class="relative h-64 bg-gray-200">
+                    ${mediaHtml}
+                </div>
+                <div class="p-4 flex-grow">
+                    <h3 class="text-lg font-semibold text-gray-800 truncate" title="${item.nome}">
+                        ${item.nome}
+                    </h3>
+                    ${precoHtml}
+                </div>
+                <div class="p-3 bg-gray-50 border-t">
+                    <a href="${item.fileURL}" download="${item.nome}" target="_blank"
+                       class="w-full text-center block px-4 py-2 bg-cj-secundaria text-white text-sm font-medium rounded-md hover:bg-cj-principal transition-colors">
+                        Baixar Mídia
+                    </a>
+                </div>
+            `;
+            return card;
+        }
+
+        // =======================================================================
+        //     MODO DE PRÉ-VISUALIZAÇÃO FOI REMOVIDO
+        // =======================================================================
+
+
+        // --- Código do Firebase (AGORA ATIVADO) ---
+        
+        let app, auth, db, storage;
+        
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            storage = getStorage(app);
+            
+            // Autentica o usuário anonimamente para ter permissão
+            await signInAnonymously(auth);
+
+            // Inicia o carregamento do catálogo
+            carregarCatalogo();
+
+        } catch (e) {
+            console.error("Erro ao inicializar o Firebase:", e);
+            loadingMsg.innerText = "Erro ao conectar ao banco de dados. Verifique a configuração do Firebase.";
+            console.warn("Verifique se você colou corretamente o objeto 'firebaseConfig' acima.");
+        }
+
+        /**
+         * CARREGAR CATÁLOGO (FIRESTORE)
+         */
+        function carregarCatalogo() {
+            if (!db) return; // Não faz nada se o DB não foi iniciado
+
+            const dbCollection = collection(db, "catalogoCJ");
+            // Ordena pelos mais recentes primeiro
+            const q = query(dbCollection, orderBy("createdAt", "desc")); 
+
+            onSnapshot(q, (snapshot) => {
+                loadingMsg.classList.add('hidden');
+                grid.innerHTML = ''; // Limpa o grid para recarregar
+
+                if (snapshot.empty) {
+                    emptyMsg.classList.remove('hidden');
+                } else {
+                    emptyMsg.classList.add('hidden');
+                    snapshot.forEach(doc => {
+                        const item = doc.data();
+                        const card = criarCard(item);
+                        grid.appendChild(card);
+                    });
+                }
+            }, (error) => {
+                console.error("Erro ao buscar catálogo: ", error);
+                loadingMsg.innerText = "Erro ao carregar catálogo.";
+            });
+        }
+
+        /**
+         * LIDAR COM O UPLOAD (STORAGE)
+         */
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!storage || !db) {
+                alert("Erro: O Firebase não está conectado.");
+                return;
+            }
+
+            const nome = document.getElementById('nome').value;
+            const preco = document.getElementById('preco').value;
+            const arquivos = document.getElementById('arquivos').files;
+
+            if (arquivos.length === 0) {
+                alert("Por favor, selecione pelo menos um arquivo.");
+                return;
+            }
+
+            // Mostra o feedback de carregamento
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-50');
+            feedbackUpload.classList.remove('hidden');
+            feedbackUpload.classList.add('flex');
+
+            try {
+                // Faz o upload de cada arquivo
+                for (let i = 0; i < arquivos.length; i++) {
+                    const file = arquivos[i];
+                    feedbackTexto.innerText = `Enviando ${i + 1} de ${arquivos.length}: ${file.name}...`;
+
+                    // 1. Cria uma referência única no Storage
+                    const nomeUnico = `${Date.now()}-${file.name}`;
+                    const storageRef = ref(storage, `uploads/${nomeUnico}`);
+
+                    // 2. Faz o upload do arquivo
+                    await uploadBytes(storageRef, file);
+
+                    // 3. Pega a URL de download
+                    const fileURL = await getDownloadURL(storageRef);
+
+                    // 4. Salva as informações no Firestore
+                    await addDoc(collection(db, "catalogoCJ"), {
+                        nome: nome,
+                        preco: preco,
+                        fileURL: fileURL,
+                        tipo: file.type, // Salva o tipo (image/png, video/mp4, etc)
+                        nomeArquivo: file.name,
+                        createdAt: serverTimestamp() // Pega a data do servidor
+                    });
+                }
+                
+                // Limpa o formulário e reseta o botão
+                form.reset();
+                feedbackTexto.innerText = `Enviado com sucesso!`;
+                
+            } catch (error) {
+                console.error("Erro durante o upload: ", error);
+                feedbackTexto.innerText = "Erro ao enviar. Tente novamente.";
+                alert("Houve um erro no upload: " + error.message);
+            } finally {
+                // Esconde o feedback e reativa o botão
+                setTimeout(() => {
+                    feedbackUpload.classList.add('hidden');
+                    btnSubmit.disabled = false;
+                    btnSubmit.classList.remove('opacity-50');
+                    feedbackTexto.innerText = "Enviando arquivos, por favor aguarde...";
+                }, 2000);
+            }
+        });
+
+    </script>
+
+</body>
+</html>
+
